@@ -6,7 +6,7 @@ tplt = plot(5,5,'or',MarkerFaceColor='r');
 
 % parameters: target to reach, joint variables, learning rate (only for gradient method).
 target = [2; 1; 0];
-theta0_deg = [90; 90; 90]; % initial conditions 0,0,0 | 90,90,90
+theta0_deg = [0; 0; 0]; % initial conditions 0,0,0 | 90,90,90
 theta0 = deg2rad(theta0_deg);
 learningRate = 0.5;
 
@@ -43,7 +43,7 @@ if robotArm.isInWorkspace(target)
     else
         plot_loss_levelset(robotArm, target, thetaHistoryN, learningRate, "NEWTON");
     end
-    pause(50);
+    pause(30);
 else
     disp("NOT REACHABLE point. Aborting...")
 end
