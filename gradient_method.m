@@ -3,12 +3,14 @@ function [loss_history, theta_history, isConvergent] = gradient_method(R, theta0
     lossFunction = @(t) R.Compute(t) - target;
     loss = norm(lossFunction(theta)); % Stopping criteria: cartesian error < epsilon = 0.1
     maxIter = 1000;
-    iter = 0;
-    loss_history = zeros(1, maxIter);
-    theta_history = zeros(maxIter, numel(theta0));
+    iter = 1;
+    loss_history = zeros(1, maxIter+1);
+    theta_history = zeros(maxIter+1, numel(theta0));
+    loss_history(iter) = loss;
+    theta_history(iter, :) = theta.';
     isConvergent = false;
 
-    disp('Iterazione 0');
+    disp(['Iteration: 0', ', Theta: ', mat2str(round(theta.', 2))]);
     pause(3);
     while loss > 0.01 && iter < maxIter
         J = analytical_jacobian(R, theta);
@@ -25,12 +27,12 @@ function [loss_history, theta_history, isConvergent] = gradient_method(R, theta0
         [U, S, V] = svd(J);
         min_singular_value = min(diag(S));
         if min_singular_value < 1e-6
-            disp('Singolarità rilevata!');
+            disp('Singularity detected!');
         end
 
         % update
         lossVector = lossFunction(theta);
-        disp(['iteration:', num2str(iter), ', loss: ',num2str(loss)]);
+        disp(['iteration:', num2str(iter-1), ', loss: ',num2str(loss), ', Theta: ', mat2str(round(theta.', 2))]);
         theta = theta - learningRate * J' * lossVector;
         
         R.Compute(theta);
@@ -51,7 +53,7 @@ function [loss_history, theta_history, isConvergent] = gradient_method(R, theta0
     if loss <= 0.1
         isConvergent = true;
         disp('Convergence reached.');
-        disp(['Number of iterations: ', num2str(iter), ', Loss: ', num2str(loss)]);
+        disp(['Number of iterations: ', num2str(iter), ', Loss: ', num2str(loss), ', Theta: ', mat2str(round(theta.', 2))]);
     else
         disp(['!!! Convergence NOT REACHED !!! After ', num2str(iter), ' iterations, with loss ', num2str(loss)])
     end

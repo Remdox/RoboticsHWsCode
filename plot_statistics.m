@@ -23,9 +23,15 @@ function plot_statistics(theta0, lossHistory, thetaHistory, methodName, learning
     legend('q_{1}', 'q_{2}', 'q_{3}');
     grid on;
     
-    if ~exist('plots', 'dir')
-        mkdir('plots');
+    if ~exist('loss', 'dir')
+        mkdir('loss');
     end
-    theta0_str = strrep(mat2str(theta0), ' ', '_');
-    saveas(figLoss, fullfile('plots', ['loss_', methodName, '_', theta0_str, '_', num2str(learningRate), '.png']));
+    % Replace the old string conversion with this:
+    theta0_str = mat2str(theta0); 
+    % Remove brackets and replace semicolons/spaces with underscores
+    theta0_str = regexprep(theta0_str, '[\[\] ]', ''); 
+    theta0_str = strrep(theta0_str, ';', '_');
+    
+    % Now saveas will receive a clean path like 'plots_2026/loss_GRAD_0_0_0_0.15.png'
+    saveas(figLoss, fullfile('loss', ['loss_', methodName, '_', theta0_str, '_', num2str(learningRate), '.png']));
 end
